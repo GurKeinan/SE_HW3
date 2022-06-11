@@ -1,4 +1,5 @@
 import java.lang.reflect.*;
+import java.util.Iterator;
 
 public interface Queue<E extends Cloneable> extends Iterable<E>, Cloneable {
     void enqueue(E element);
@@ -12,6 +13,7 @@ public interface Queue<E extends Cloneable> extends Iterable<E>, Cloneable {
 
 public class ArrayQueue<E extends Cloneable> implements Queue<E>, Iterable<E>, Cloneable
 {
+
 
     Cloneable[] elements;
     int size;
@@ -77,9 +79,11 @@ public class ArrayQueue<E extends Cloneable> implements Queue<E>, Iterable<E>, C
         Method clone = null;
         try {
 
-            ArrayQueue<E> temp = (ArrayQueue<E>)super.clone();
+            ArrayQueue<E> temp = super.clone();
             temp.elements = this.elements.clone();
             for (int i = this.head ; i < num_of_elements ; i++) {
+                E item = (E)this.elements[i % size];
+                clone = item.getClass().getMethod("clone");
                 temp.elements[i % size] = (E) (elements[i % size].clone());
             }
         catch(Exception e){  return null;}
@@ -91,4 +95,8 @@ public class ArrayQueue<E extends Cloneable> implements Queue<E>, Iterable<E>, C
 
     }
 
+    @Override
+    public Iterator<E> iterator() {
+        return null;
+    }
 }
