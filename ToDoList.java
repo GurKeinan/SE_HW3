@@ -1,4 +1,4 @@
-public class ToDoList implements Cloneable
+public class ToDoList implements Cloneable, Iterable<Task>
 {
     public Task head;
     public Task tail;
@@ -38,6 +38,36 @@ public class ToDoList implements Cloneable
                 size++;
             }
             else throw new TaskAlreadyExistsException();
+        }
+    }
+
+    public ToDoListIterator iterator()
+    {
+        return new ToDoListIterator(this);
+    }
+
+    public void smileSort()
+    {
+        ToDoList temp = new ToDoList();
+        Task min = this.head;
+        for(Task tmp1 : this){
+            for(Task tmp2 : this)
+            {
+                if(tmp2.compare(tmp1) < 0){
+                    less++;
+                }
+            }
+
+            less = 0;
+        }
+    }
+
+    @Override
+    public boolean equals(Object T){
+
+        for(int i = 0; i < size; i++)
+        {
+
         }
     }
 

@@ -11,7 +11,7 @@ public interface Queue<E extends Cloneable> extends Iterable<E>, Cloneable {
 }
 
 
-public class ArrayQueue<E extends Cloneable> implements Queue<E>, Iterable<E>, Cloneable
+class ArrayQueue<E extends Cloneable> implements Queue<E>, Iterable<E>, Cloneable
 {
 
 
@@ -28,6 +28,9 @@ public class ArrayQueue<E extends Cloneable> implements Queue<E>, Iterable<E>, C
         {
             this.size = size;
             elements = new Cloneable[size];
+            this.head = 0;
+            this.tail = 0;
+
         }
     }
 
@@ -35,11 +38,16 @@ public class ArrayQueue<E extends Cloneable> implements Queue<E>, Iterable<E>, C
     public void enqueue(E element)
     {
         if (this.num_of_elements == this.size) throw new QueueOverflowException();
+        else if(num_of_elements == 0)
+        {
+            this.num_of_elements += 1;
+            this.elements[this.tail] = element;
+        }
         else
         {
-            this.head = (this.head+1)%this.size;
+            this.tail = (this.tail+1)%this.size;
             this.num_of_elements += 1;
-            this.elements[this.head] = element;
+            this.elements[this.tail] = element;
 
         }
 
@@ -47,11 +55,21 @@ public class ArrayQueue<E extends Cloneable> implements Queue<E>, Iterable<E>, C
     public E dequeue()
     {
         if (this.num_of_elements == 0) throw new EmptyQueueException();
+        else if(this.num_of_elements == 1)
+        {
+            this.num_of_elements -= 1;
+            E temp = ((E)this.elements[this.head]);
+            this.elements[head] = null;
+            return temp;
+        }
         else
         {
-            this.tail = (this.tail+1)%this.size;
+
             this.num_of_elements -= 1;
-            return ((E)this.elements[this.tail]);
+            E temp = ((E)this.elements[this.head]);
+            this.elements[head] = null;
+            this.head = (this.head+1)%this.size;
+            return temp;
         }
     }
 
@@ -60,12 +78,12 @@ public class ArrayQueue<E extends Cloneable> implements Queue<E>, Iterable<E>, C
         if (this.num_of_elements == 0) throw new EmptyQueueException();
         else
         {
-            return ((E)this.elements[this.tail]);
+            return ((E)this.elements[this.head]);
         }
     }
     public int size()
     {
-        return this.size;
+        return this.num_of_elements;
     }
 
 
@@ -74,29 +92,33 @@ public class ArrayQueue<E extends Cloneable> implements Queue<E>, Iterable<E>, C
         return (num_of_elements == 0);
     }
 
-    public Queue<E> clone()
+    public ArrayQueue<E> clone()
     {
-        Method clone = null;
+        ArrayQueue<E> temp = new ArrayQueue<E>(this.size);
+        temp.num_of_elements = this.num_of_elements;
+        temp.head = 0;
+        temp.tail = 0;
+        Method myclone = null;
         try {
 
-            ArrayQueue<E> temp = super.clone();
             temp.elements = this.elements.clone();
-            for (int i = this.head ; i < num_of_elements ; i++) {
-                E item = (E)this.elements[i % size];
-                clone = item.getClass().getMethod("clone");
-                temp.elements[i % size] = (E) (elements[i % size].clone());
+            for (int i = this.head; i < num_of_elements; i++) {
+                E item = (E) this.elements[i % size];
+                if (item != null) {
+                    myclone = item.getClass().getMethod("clone");
+                    temp.elements[temp.tail] = (Cloneable) myclone.invoke(item);
+
+                }
+                else {temp.elements[temp.tail] = null;}
+                temp.tail++;
             }
+        }
         catch(Exception e){  return null;}
-            }
-
-
-
-
-
+        return temp;
     }
 
     @Override
     public Iterator<E> iterator() {
-        return null;
+        return new ArrayQueueIterator<E>(this);
     }
 }
