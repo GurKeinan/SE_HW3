@@ -1,46 +1,65 @@
-public class ToDoList implements Cloneable, Iterable<Task>
+import java.util.ArrayList;
+import java.util.Date;
+
+public class ToDoList implements Cloneable, Iterable<Task>, TaskIterable
 {
-    public Task head;
-    public Task tail;
-    public int size;
+    private ArrayList<Task> toDoList;
+    private Date scanningDueDate;
+    public int numOfElements;
 
     public ToDoList()
     {
-        this.head = null;
-        this.tail = null;
-        this.size = 0;
+        toDoList = new ArrayList();
+        numOfElements = 0;
+        scanningDueDate = null;
     }
 
-    public boolean check_description(Task cur_checked , Task task_to_add)
-    {
-        boolean result = cur_checked.description.equals(task_to_add.description);
-        if (!cur_checked.has_next()) return result;
-        else{
-            if (!result) return false;
-            return check_description(cur_checked.next_task , task_to_add);
-        }
+    public Date getScanningDueDate() {
+        return scanningDueDate;
     }
 
-    public void addTask(Task task_to_add) throws TaskAlreadyExistsException
+    public ArrayList<Task> getToDoList() {
+        return toDoList;
+    }
+
+    public int getNumOfElements() {
+        return numOfElements;
+    }
+
+    public void setNumOfElements(int numOfElements) {
+        this.numOfElements = numOfElements;
+    }
+
+    public void addTask(Task task) throws TaskAlreadyExistsException
     {
-        if (size == 0)
-        {
-            this.head = task_to_add;
-            this.tail = task_to_add;
-            size++;
-        }
-        else
-        {
-            if (check_description(this.tail , task_to_add))
-            {
-                this.head.next_task = task_to_add;
-                this.head = this.head.next_task;
-                size++;
+        for(int i = 0; i < numOfElements; i++){
+            if((this.toDoList.get(i).description).equals(task.description)){
+                throw new TaskAlreadyExistsException();
             }
-            else throw new TaskAlreadyExistsException();
         }
+        this.toDoList.add(task);
+        numOfElements++;
     }
 
+    public void setScanningDueDate(Date date)
+    {
+        this.scanningDueDate = date;
+        /*if(date == null){
+            for(Task t: this.toDoList){
+                System.out.println(t);
+            }
+        }
+        else{
+            int i = 0;
+            smileSort();
+            while(this.toDoList.get(i).getDueDate().compareTo(date) <= 0)
+            {
+                System.out.println(this.toDoList.get(i).toString());
+            }
+
+        }*/
+
+    }
     public ToDoListIterator iterator()
     {
         return new ToDoListIterator(this);
@@ -48,62 +67,73 @@ public class ToDoList implements Cloneable, Iterable<Task>
 
     public void smileSort()
     {
-        ToDoList temp = new ToDoList();
-        Task min = this.head;
-        for(Task tmp1 : this){
-            for(Task tmp2 : this)
-            {
-                if(tmp2.compare(tmp1) < 0){
-                    less++;
+        for(int i = 0; i < numOfElements; i++) {
+            int min_i = i;
+            Task min = this.toDoList.get(min_i);
+            for(int j = i + 1; j < numOfElements; j++) {
+                if(this.toDoList.get(j).compare(min) < 0){
+                    min = this.toDoList.get(j);
+                    min_i = j;
                 }
             }
-
-            less = 0;
+            Task tmp = this.toDoList.get(i);
+            this.toDoList.set(i, min);
+            this.toDoList.set(min_i, tmp);
         }
     }
 
     @Override
     public boolean equals(Object T){
-
-        for(int i = 0; i < size; i++)
-        {
-
+        ToDoList t = (ToDoList) T;
+        if(t == null) {
+            return (this == t);
         }
+        if(t.getNumOfElements() != this.numOfElements){
+            return false;
+        }
+        t = (ToDoList)T;
+        ToDoList tClone = t.clone();
+        tClone.smileSort();
+        ToDoList clone = this.clone();
+        clone.smileSort();
+        for(int i = 0; i < this.numOfElements; i++){
+            if(!(clone.toDoList.get(i).equals(tClone.getToDoList().get(i)))){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //TODO
+    @Override
+    public int hashCode()
+    {
+        return 0;
     }
 
     @Override
     public String toString()
     {
         String ret_str = "[";
-        Task cur_task = this.tail;
-        while(cur_task.has_next())
+        for(int i = 0; i < this.numOfElements - 1; i++)
         {
-            ret_str += cur_task.toString() + ", ";
+            ret_str += "(" + this.toDoList.get(i).toString() + ")" +  ", ";
         }
-        ret_str += cur_task.toString()+"]";
+        ret_str += "(" + this.toDoList.get(this.numOfElements - 1).toString() + ")" + "]";
         return ret_str;
     }
 
     @Override
-    public ToDoList clone()
-    {
-        ToDoList temp = new ToDoList();
-        if (this.size == 0) return temp;
+    public ToDoList clone() {
         try {
-            temp.tail = this.tail.clone();
-            temp.head = this.tail.clone();
-            Task cur_cloned = this.tail;
-            while (cur_cloned.has_next())
-            {
-                temp.addTask(cur_cloned.next_task.clone());
-                cur_cloned = cur_cloned.next_task;
+            ToDoList copy = new ToDoList();
+            copy.setScanningDueDate(this.scanningDueDate);
+            for (int i = 0; i < this.numOfElements; i++) {
+                copy.addTask(this.toDoList.get(i).clone());
             }
+            return copy;
+        } catch (Exception e) {
+            return null;
         }
-        catch(Exception e) {return null;};
-        return temp;
     }
-
-
-
-
 }
