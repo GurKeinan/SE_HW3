@@ -104,11 +104,14 @@ public class ToDoList implements Cloneable, Iterable<Task>, TaskIterable
         return true;
     }
 
-    //TODO
     @Override
     public int hashCode()
     {
-        return 0;
+        int sum = 0;
+        for(int i = 0; i < numOfElements; i++){
+            sum += this.toDoList.get(i).hashCode();
+        }
+        return sum;
     }
 
     @Override
