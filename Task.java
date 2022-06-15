@@ -3,10 +3,10 @@ import java.util.Date;
 
 public class Task implements Cloneable
 {
-    public String description;
-    public Date dueDate;
+    private String description;
+    private Date dueDate;
 
-    /**\
+    /**
      * constructor for task
      * @param description description of this task
      * @param date this task's due date
@@ -17,6 +17,14 @@ public class Task implements Cloneable
         this.dueDate = date;
     }
 
+    /**
+     * get method for description
+     * @return this task's description
+     */
+    public String getDescription()
+    {
+        return this.description;
+    }
     /**
      * returns due date
      * @return this task's due date

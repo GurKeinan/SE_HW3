@@ -49,7 +49,7 @@ public class ToDoList implements Cloneable, Iterable<Task>, TaskIterable
     public void addTask(Task task) throws TaskAlreadyExistsException
     {
         for(int i = 0; i < numOfElements; i++){
-            if((this.toDoList.get(i).description).equals(task.description)){
+            if((this.toDoList.get(i).getDescription()).equals(task.getDescription())){
                 throw new TaskAlreadyExistsException();
             }
         }
