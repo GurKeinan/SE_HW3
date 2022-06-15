@@ -5,8 +5,11 @@ public class ToDoList implements Cloneable, Iterable<Task>, TaskIterable
 {
     private ArrayList<Task> toDoList;
     private Date scanningDueDate;
-    public int numOfElements;
+    private int numOfElements;
 
+    /**
+     * constructor for to do list.
+     */
     public ToDoList()
     {
         toDoList = new ArrayList();
@@ -14,22 +17,35 @@ public class ToDoList implements Cloneable, Iterable<Task>, TaskIterable
         scanningDueDate = null;
     }
 
+    /**
+     * returns the scanning due date of this todolist
+     * @return scanning due date of this todolist
+     */
     public Date getScanningDueDate() {
         return scanningDueDate;
     }
 
+    /**
+     * returns this todolist's arrayList of tasks
+     * @return arrayList of tasks in this this todolist
+     */
     public ArrayList<Task> getToDoList() {
         return toDoList;
     }
 
+    /**
+     * returns number of tasks in this todolist
+     * @return number of elements in this todolist
+     */
     public int getNumOfElements() {
         return numOfElements;
     }
 
-    public void setNumOfElements(int numOfElements) {
-        this.numOfElements = numOfElements;
-    }
-
+    /**
+     * adds given task to the end of arraylist
+     * @param task task that to add to arraylist
+     * @throws TaskAlreadyExistsException a task with the same description is already in arraylist
+     */
     public void addTask(Task task) throws TaskAlreadyExistsException
     {
         for(int i = 0; i < numOfElements; i++){
@@ -41,30 +57,27 @@ public class ToDoList implements Cloneable, Iterable<Task>, TaskIterable
         numOfElements++;
     }
 
+    /**
+     * sets the latest date that will be iterated to
+     * @param date scanning due date
+     */
     public void setScanningDueDate(Date date)
     {
         this.scanningDueDate = date;
-        /*if(date == null){
-            for(Task t: this.toDoList){
-                System.out.println(t);
-            }
-        }
-        else{
-            int i = 0;
-            smileSort();
-            while(this.toDoList.get(i).getDueDate().compareTo(date) <= 0)
-            {
-                System.out.println(this.toDoList.get(i).toString());
-            }
-
-        }*/
-
     }
+
+    /**
+     * creates iterator for this todolist
+     * @return iterator created for this todolist
+     */
     public ToDoListIterator iterator()
     {
         return new ToDoListIterator(this);
     }
 
+    /**
+     * max sort for arraylist of tasks
+     */
     public void smileSort()
     {
         for(int i = 0; i < numOfElements; i++) {
@@ -82,6 +95,11 @@ public class ToDoList implements Cloneable, Iterable<Task>, TaskIterable
         }
     }
 
+    /**
+     * check's whether this todolist tasks are the same as another
+     * @param T todolist that will be compared to this todolist
+     * @return whether this todolist and another are the same
+     */
     @Override
     public boolean equals(Object T){
         ToDoList t = (ToDoList) T;
@@ -104,6 +122,10 @@ public class ToDoList implements Cloneable, Iterable<Task>, TaskIterable
         return true;
     }
 
+    /**
+     * hashcode for this todolist
+     * @return hashcode
+     */
     @Override
     public int hashCode()
     {
@@ -114,6 +136,10 @@ public class ToDoList implements Cloneable, Iterable<Task>, TaskIterable
         return sum;
     }
 
+    /**
+     * creates a string representing this todolist tasks
+     * @return string representing the tasks in this todolist
+     */
     @Override
     public String toString()
     {
@@ -126,6 +152,10 @@ public class ToDoList implements Cloneable, Iterable<Task>, TaskIterable
         return ret_str;
     }
 
+    /**
+     * deep clone for this todolist
+     * @return another todolist with the same values as this one
+     */
     @Override
     public ToDoList clone() {
         try {
