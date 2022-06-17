@@ -35,7 +35,7 @@ public interface Queue<E extends Cloneable> extends Iterable<E>, Cloneable {
     /**
      * deep clone of this queue
      * @return clone of this queue
-     * @throws Exception if something went wrong
+     * @throws RuntimeException if something went wrong
 
      */
     Queue<E> clone();
